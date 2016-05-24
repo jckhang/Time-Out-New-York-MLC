@@ -1,6 +1,9 @@
-import tweepy, json, time
+import tweepy
+import json
+import time
 from settings import *
-import pandas as pd, numpy as np
+import pandas as pd
+import numpy as np
 from frsqrGettwitter import getIDsFromCleanData
 
 auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
@@ -23,22 +26,22 @@ usersToScrape = getIDsFromCleanData()
 
 friendsDict = {}
 
-for cnt,i in enumerate(usersToScrape):
-	try:
-		friends = api.friends_ids(user_id=i)
+for cnt, i in enumerate(usersToScrape):
+    try:
+        friends = api.friends_ids(user_id=i)
 
-	except tweepy.RateLimitError:
-		print "RATE LIMIT EXCEEDED AT", cnt
-		time.sleep(60*15)
-		try:
-			friends = api.friends_ids(user_id=i)
-		except tweepy.TweepError:
-			continue
+    except tweepy.RateLimitError:
+        print "RATE LIMIT EXCEEDED AT", cnt
+        time.sleep(60 * 15)
+        try:
+            friends = api.friends_ids(user_id=i)
+        except tweepy.TweepError:
+            continue
 
-	except tweepy.TweepError:
-		continue
+    except tweepy.TweepError:
+        continue
 
-	friendsDict[i] = friends
+    friendsDict[i] = friends
 
 with open('../data/twitter_following_scraped.json', 'w') as fp:
-	json.dump(friendsDict, fp)
+    json.dump(friendsDict, fp)
